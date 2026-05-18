@@ -1,0 +1,203 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="d435_cameras">
+
+  <!-- RealSense D435 mesh/TF macro -->
+  <xacro:include filename="$(find realsense2_description)/urdf/_d435.urdf.xacro"/>
+
+  <!-- Dummy world link -->
+  <link name="world"/>
+
+  <!-- ====================================================== -->
+  <!-- Macro: Static D435 Camera with PAL Gazebo Plugin -->
+  <!-- ====================================================== -->
+
+  <xacro:macro name="static_d435_with_plugin"
+               params="name x y z roll pitch yaw">
+
+    <!-- D435 visual mesh + TF -->
+    <xacro:sensor_d435
+      name="${name}"
+      parent="world"
+      use_mesh="true"
+      add_plug="true"
+      use_nominal_extrinsics="true">
+
+      <origin xyz="${x} ${y} ${z}"
+              rpy="${roll} ${pitch} ${yaw}"/>
+
+    </xacro:sensor_d435>
+
+    <!-- ================================================== -->
+    <!-- Gazebo Sensors -->
+    <!-- ================================================== -->
+
+    <gazebo reference="${name}_link">
+
+      <!-- Color -->
+      <sensor name="${name}color" type="camera">
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <visualize>true</visualize>
+
+        <camera name="camera">
+          <horizontal_fov>1.57</horizontal_fov>
+
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>RGB_INT8</format>
+          </image>
+
+          <clip>
+            <near>0.1</near>
+            <far>10.0</far>
+          </clip>
+        </camera>
+      </sensor>
+
+      <!-- Depth -->
+      <sensor name="${name}depth" type="depth">
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <visualize>false</visualize>
+
+        <camera name="camera">
+          <horizontal_fov>1.57</horizontal_fov>
+
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>L_INT8</format>
+          </image>
+
+          <clip>
+            <near>0.1</near>
+            <far>10.0</far>
+          </clip>
+        </camera>
+      </sensor>
+
+      <!-- Infrared 1 -->
+      <sensor name="${name}ired1" type="camera">
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <visualize>false</visualize>
+
+        <camera name="camera">
+          <horizontal_fov>1.57</horizontal_fov>
+
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>L_INT8</format>
+          </image>
+
+          <clip>
+            <near>0.1</near>
+            <far>10.0</far>
+          </clip>
+        </camera>
+      </sensor>
+
+      <!-- Infrared 2 -->
+      <sensor name="${name}ired2" type="camera">
+        <always_on>true</always_on>
+        <update_rate>30</update_rate>
+        <visualize>false</visualize>
+
+        <camera name="camera">
+          <horizontal_fov>1.57</horizontal_fov>
+
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>L_INT8</format>
+          </image>
+
+          <clip>
+            <near>0.1</near>
+            <far>10.0</far>
+          </clip>
+        </camera>
+      </sensor>
+
+    </gazebo>
+
+    <!-- ================================================== -->
+    <!-- PAL RealSense Gazebo Plugin -->
+    <!-- ================================================== -->
+
+    <gazebo>
+
+      <plugin name="${name}_plugin"
+              filename="librealsense_gazebo_plugin.so">
+
+        <prefix>${name}</prefix>
+
+        <depthUpdateRate>30.0</depthUpdateRate>
+        <colorUpdateRate>30.0</colorUpdateRate>
+        <infraredUpdateRate>30.0</infraredUpdateRate>
+
+        <!-- Topics -->
+
+        <colorTopicName>color/image_raw</colorTopicName>
+        <colorCameraInfoTopicName>color/camera_info</colorCameraInfoTopicName>
+
+        <depthTopicName>depth/image_raw</depthTopicName>
+        <depthCameraInfoTopicName>depth/camera_info</depthCameraInfoTopicName>
+
+        <infrared1TopicName>infra1/image_raw</infrared1TopicName>
+        <infrared1CameraInfoTopicName>infra1/camera_info</infrared1CameraInfoTopicName>
+
+        <infrared2TopicName>infra2/image_raw</infrared2TopicName>
+        <infrared2CameraInfoTopicName>infra2/camera_info</infrared2CameraInfoTopicName>
+
+        <!-- Optical Frames -->
+
+        <colorOpticalframeName>${name}_color_optical_frame</colorOpticalframeName>
+        <depthOpticalframeName>${name}_depth_optical_frame</depthOpticalframeName>
+
+        <infrared1OpticalframeName>${name}_infra1_optical_frame</infrared1OpticalframeName>
+        <infrared2OpticalframeName>${name}_infra2_optical_frame</infrared2OpticalframeName>
+
+        <!-- Depth Range -->
+
+        <rangeMinDepth>0.3</rangeMinDepth>
+        <rangeMaxDepth>10.0</rangeMaxDepth>
+
+        <pointCloud>false</pointCloud>
+
+      </plugin>
+
+    </gazebo>
+
+  </xacro:macro>
+
+  <!-- ====================================================== -->
+  <!-- Camera 1 -->
+  <!-- ====================================================== -->
+
+  <xacro:static_d435_with_plugin
+    name="camera1"
+    x="-1.8"
+    y="2.95"
+    z="2.0"
+    roll="0"
+    pitch="0.3"
+    yaw="-0.48"/>
+
+  <!-- ====================================================== -->
+  <!-- Camera 2 -->
+  <!-- ====================================================== -->
+
+  <xacro:static_d435_with_plugin
+    name="camera2"
+    x="-2.3"
+    y="2.65"
+    z="2.0"
+    roll="0"
+    pitch="0.3"
+    yaw="-1.1"/>
+
+
+</robot>

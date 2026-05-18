@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+    <actor name="actor2">
+        <skin>
+            <filename>model://actor_walk2/meshes/walk.dae</filename>
+            <scale>0.9</scale>
+        </skin>
+        <pose>0 0 0 0 0 0</pose>
+        <animation name="walk">
+            <filename>model://actor_walk2/meshes/walk.dae</filename>
+            <scale>1.000000</scale>
+            <interpolate_x>true</interpolate_x>
+        </animation>
+        <script>
+            <loop>true</loop>
+            <delay_start>0</delay_start>
+            <auto_start>true</auto_start>
+            <trajectory id="0" type="walk">
+                <waypoint>
+                    <time>0</time>
+                    <pose>-1.2 -2 0 0 0 1.57</pose>
+                </waypoint>
+                <waypoint>
+                    <time>1.5</time>
+                    <pose>-1.2 -1 0 0 0 1.57</pose>
+                </waypoint>
+                <waypoint>
+                    <time>3</time>
+                    <pose>-1.2 0 0 0 0 1.57</pose>
+                </waypoint>
+               <waypoint>
+                    <time>4.5</time>
+                    <pose>-1.2 1 0 0 0 1.57</pose>
+                </waypoint>
+                <waypoint>
+                    <time>8.5</time>
+                    <pose>-1.2 1 0 0 0 -1.57</pose>
+                </waypoint>
+                <waypoint>
+                    <time>10</time>
+                    <pose>-1.2 0 0 0 0 -1.57</pose>
+                </waypoint>
+                <waypoint>
+                    <time>11.5</time>
+                    <pose>-1.2 -1 0 0 0 -1.57</pose>
+                </waypoint>
+               <waypoint>
+                    <time>13</time>
+                    <pose>-1.2 -2 0 0 0 -1.57</pose>
+                </waypoint>
+            </trajectory>
+        </script>
+    </actor>
+</sdf>
