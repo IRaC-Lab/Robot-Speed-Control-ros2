@@ -47,6 +47,11 @@ class PickPlaceDemo(Node):
         self.arm.max_acceleration = 0.3
         self.gripper_q = 0.0
         self.current_scaling_factor = 1.0
+        
+        self.current_target_joint_deg = None
+        self.current_target_name = ""
+        self.need_replan = False
+        self.current_scaling_factor = 1.0
 
     def deg_list(self, values):
         return [math.radians(v) for v in values]
@@ -55,8 +60,7 @@ class PickPlaceDemo(Node):
         new_scaling = float(msg.data)
         new_scaling = max(0.01, min(new_scaling, 1.0))
 
-        old_scaling = getattr(self, "current_scaling_factor", 1.0)
-
+        old_scaling = self.current_scaling_factor
         self.current_scaling_factor = new_scaling
 
         self.arm.max_velocity = new_scaling
@@ -67,9 +71,7 @@ class PickPlaceDemo(Node):
         )
 
         if abs(new_scaling - old_scaling) > 0.001:
-            self.get_logger().info(
-                "Scaling changed. Cancel current motion."
-            )
+            self.need_replan = True
 
             try:
                 self.arm.cancel_execution()
@@ -79,15 +81,33 @@ class PickPlaceDemo(Node):
                     f"cancel_execution failed: {e}"
                 )
 
-
     def move_arm(self, joint_deg, name=""):
-        rclpy.spin_once(self, timeout_sec=0.1)
-        
-        self.get_logger().info(f"Move arm: {name}, velocity={self.arm.max_velocity}")
-        joint_rad = self.deg_list(joint_deg)
+        self.current_target_joint_deg = joint_deg
+        self.current_target_name = name
 
-        self.arm.move_to_configuration(joint_rad)
-        self.arm.wait_until_executed()
+        while rclpy.ok():
+            self.need_replan = False
+
+            rclpy.spin_once(self, timeout_sec=0.1)
+
+            self.get_logger().info(
+                f"Move arm: {name}, velocity={self.arm.max_velocity}"
+            )
+
+            joint_rad = self.deg_list(joint_deg)
+
+            self.arm.move_to_configuration(joint_rad)
+            self.arm.wait_until_executed()
+
+            rclpy.spin_once(self, timeout_sec=0.1)
+
+            if self.need_replan:
+                self.get_logger().info(
+                    f"Replanning same waypoint: {name}"
+                )
+                continue
+
+            break
 
         time.sleep(0.5)
 

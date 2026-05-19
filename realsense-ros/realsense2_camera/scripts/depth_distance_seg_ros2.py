@@ -96,10 +96,8 @@ class DepthDistanceSegNode(Node):
                     cdr = 2
                     scaling_factor = 1.0
 
-                if cdr != self.pdr:
-                    self.scaling_pub.publish(Float32(data=float(scaling_factor)))
-                    self.get_logger().info(f"scaling_factor: {scaling_factor}")
-                    self.pdr = cdr
+                self.scaling_pub.publish(Float32(data=float(scaling_factor)))
+                self.get_logger().info(f"scaling_factor: {scaling_factor}")
 
             else:
                 self.publish_no_detection()
@@ -110,16 +108,11 @@ class DepthDistanceSegNode(Node):
     def publish_no_detection(self):
         self.get_logger().info("No depth information available in the selected regions")
 
-        cdr = 2
         scaling_factor = 1.0
 
         self.distance_pub.publish(Float32(data=-1.0))
-
-        if cdr != self.pdr:
-            self.scaling_pub.publish(Float32(data=float(scaling_factor)))
-            self.get_logger().info(f"scaling_factor: {scaling_factor}")
-            self.pdr = cdr
-
+        self.scaling_pub.publish(Float32(data=float(scaling_factor)))
+        self.get_logger().info(f"scaling_factor: {scaling_factor}")
 
 def main():
     rclpy.init()
