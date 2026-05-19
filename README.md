@@ -205,4 +205,3 @@ python3 depth_distance_seg_ros2.py
 - RealSense D435 Depth Camera
 - YOLO Segmentation
 - Human-Robot Distance Monitoring
-- Dynamic Robot Speed Scaling (SSM-style)
