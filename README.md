@@ -63,7 +63,7 @@ ros-humble-tf-transformations
 
 ```bash
 cd ~/colcon_ws/src
-git clone https://github.com/dlwldbs1226/Robot-Speed-Control-ros2.git
+git clone https://github.com/IRaC-Lab/Robot-Speed-Control-ros2.git
 ```
 
 ---
